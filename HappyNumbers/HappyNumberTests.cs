@@ -7,15 +7,6 @@ namespace HappyNumbers
     [TestFixture]
     internal class HappyNumberTests
     {
-        [Test]
-        [TestCase(31, true)]
-        [TestCase(4, false)]
-        [TestCase(2, false)]
-        public void CanIdentifyHappyNumber(int i, bool expected)
-        {
-            Assert.AreEqual(expected, i.IsAHappyNumber());
-        }
-
         // Taken from http://oeis.org/A007770
         private static readonly int[] HappyNumbersUpTo1000 =
         {
