@@ -15,14 +15,25 @@ namespace HappyNumbers
 
         public static bool IsAHappyNumber(this int startingNumber)
         {
-            var digitsToTest = startingNumber.GetDigits().StripZeroes().OrderedByDigit();
+            var digitsToTest = startingNumber.GetDigits()
+                                             .StripZeroes()
+                                             .OrderedByDigit();
+
             var happyNumberKey = string.Join(",", digitsToTest);
 
-            if (HappyNumberResults.ContainsKey(happyNumberKey))
+            if (AlreadyKnowThatThisNumberIsHappy(happyNumberKey))
             {
                 return HappyNumberResults[happyNumberKey];
             }
 
+            GuardAgainstStrangeness(startingNumber);
+            NumberChain.Add(startingNumber, new HashSet<int>{startingNumber});
+            TestForHappiness(startingNumber, happyNumberKey);
+            return HappyNumberResults[happyNumberKey];
+        }
+
+        private static void GuardAgainstStrangeness(int startingNumber)
+        {
             if (NumberChain.ContainsKey(startingNumber))
             {
                 throw new Exception(
@@ -30,12 +41,11 @@ namespace HappyNumbers
                         "I didn't think we could have a number ({0}) without a result that was in the number chain at this point",
                         startingNumber));
             }
+        }
 
-            NumberChain.Add(startingNumber, new HashSet<int>{startingNumber});
-
-            TestForHappiness(startingNumber, happyNumberKey);
-
-            return HappyNumberResults[happyNumberKey];
+        private static bool AlreadyKnowThatThisNumberIsHappy(string happyNumberKey)
+        {
+            return HappyNumberResults.ContainsKey(happyNumberKey);
         }
 
         private static void TestForHappiness(int startingNumber, string happyNumberKey)
@@ -84,18 +94,18 @@ namespace HappyNumbers
                          .Sum(digit => digit*digit);
         }
 
-        public static IEnumerable<int> GetDigits(this int number)
+        private static IEnumerable<int> GetDigits(this int number)
         {
             return number.ToString(CultureInfo.InvariantCulture)
                          .Select(digit => int.Parse(digit.ToString(CultureInfo.InvariantCulture)));
         }
 
-        public static IEnumerable<int> StripZeroes(this IEnumerable<int> numbers)
+        private static IEnumerable<int> StripZeroes(this IEnumerable<int> numbers)
         {
             return numbers.Where(digit => digit != 0);
-        } 
+        }
 
-        public static IEnumerable<int> OrderedByDigit(this IEnumerable<int> numbers)
+        private static IEnumerable<int> OrderedByDigit(this IEnumerable<int> numbers)
         {
             return numbers.OrderBy(i=>i);
         }
