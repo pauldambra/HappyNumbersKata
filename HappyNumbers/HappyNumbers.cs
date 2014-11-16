@@ -11,16 +11,15 @@ namespace HappyNumbers
     public static class HappyNumbers
     {
         private static readonly Dictionary<int, HashSet<int>> NumberChain = new Dictionary<int, HashSet<int>>(); 
-        private static readonly Dictionary<string, bool> HappyNumberResults = new Dictionary<string, bool>();
+        private static readonly Dictionary<int[], bool> HappyNumberResults = new Dictionary<int[], bool>();
 
         public static bool IsAHappyNumber(this int startingNumber)
         {
-            var digitsToTest = startingNumber.GetDigits().StripZeroes().OrderedByDigit();
-            var happyNumberKey = string.Join(",", digitsToTest);
+            var digitsToTest = startingNumber.GetDigits().ToArray();
 
-            if (HappyNumberResults.ContainsKey(happyNumberKey))
+            if (HappyNumberResults.ContainsKey(digitsToTest))
             {
-                return HappyNumberResults[happyNumberKey];
+                return HappyNumberResults[digitsToTest];
             }
 
             if (NumberChain.ContainsKey(startingNumber))
@@ -33,12 +32,12 @@ namespace HappyNumbers
 
             NumberChain.Add(startingNumber, new HashSet<int>{startingNumber});
 
-            TestForHappiness(startingNumber, happyNumberKey);
+            TestForHappiness(startingNumber, digitsToTest);
 
-            return HappyNumberResults[happyNumberKey];
+            return HappyNumberResults[digitsToTest];
         }
 
-        private static void TestForHappiness(int startingNumber, string happyNumberKey)
+        private static void TestForHappiness(int startingNumber, int[] happyNumberKey)
         {
             var nextInChain = startingNumber;
             while (!HappyNumberCalculationIsCompleteFor(happyNumberKey))
@@ -73,7 +72,7 @@ namespace HappyNumbers
             return !canAddToTheNumbersInThisChain;
         }
 
-        private static bool HappyNumberCalculationIsCompleteFor(string happyNumberKey)
+        private static bool HappyNumberCalculationIsCompleteFor(int[] happyNumberKey)
         {
             return HappyNumberResults.ContainsKey(happyNumberKey);
         }
@@ -88,16 +87,6 @@ namespace HappyNumbers
         {
             return number.ToString(CultureInfo.InvariantCulture)
                          .Select(digit => int.Parse(digit.ToString(CultureInfo.InvariantCulture)));
-        }
-
-        public static IEnumerable<int> StripZeroes(this IEnumerable<int> numbers)
-        {
-            return numbers.Where(digit => digit != 0);
-        } 
-
-        public static IEnumerable<int> OrderedByDigit(this IEnumerable<int> numbers)
-        {
-            return numbers.OrderBy(i=>i);
         }
     }
 }
