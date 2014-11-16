@@ -1,7 +1,0 @@
-C:\spikes\HappyNumbers\HappyNumbers\bin\Release\HappyNumbers.dll
-C:\spikes\HappyNumbers\HappyNumbers\bin\Release\HappyNumbers.pdb
-C:\spikes\HappyNumbers\HappyNumbers\bin\Release\nunit.framework.dll
-C:\spikes\HappyNumbers\HappyNumbers\bin\Release\nunit.framework.xml
-C:\spikes\HappyNumbers\HappyNumbers\obj\Release\HappyNumbers.csprojResolveAssemblyReference.cache
-C:\spikes\HappyNumbers\HappyNumbers\obj\Release\HappyNumbers.dll
-C:\spikes\HappyNumbers\HappyNumbers\obj\Release\HappyNumbers.pdb
