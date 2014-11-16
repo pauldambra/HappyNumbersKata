@@ -39,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalculationTimer.cs" />
-    <Compile Include="GettingDigitsTests.cs" />
     <Compile Include="HappyNumbers.cs" />
     <Compile Include="HappyNumberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

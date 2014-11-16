@@ -67,12 +67,6 @@ namespace HappyNumbers
             }
         }
 
-        public static void ResetHappyNumberRecords()
-        {
-            NumberChain.Clear();
-            HappyNumberResults.Clear();
-        }
-
         /// <summary>
         /// If the last calculated sum of the squares of the digits is already in the set of calculated numbers
         /// then this number chain has looped around
