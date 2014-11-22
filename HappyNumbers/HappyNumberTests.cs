@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 
 namespace HappyNumbers
@@ -24,6 +26,16 @@ namespace HappyNumbers
             for (var i = 0; i < 1000; i++)
             {
                 Assert.AreEqual(HappyNumbersUpTo1000.Contains(i), i.IsAHappyNumber());
+            }
+        }
+
+        [Test]
+        public void CanTestAThousandNumbersFromAList()
+        {
+            var results = Enumerable.Range(1, 1000).AreHappyNumbers(new CancellationToken());
+            foreach (var result in results)
+            {
+                Assert.AreEqual(result.Value, HappyNumbersUpTo1000.Contains(result.Key));
             }
         }
     }

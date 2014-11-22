@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParallelCalculationTimer.cs" />
     <Compile Include="CalculationTimer.cs" />
     <Compile Include="HappyNumbers.cs" />
     <Compile Include="HappyNumberTests.cs" />

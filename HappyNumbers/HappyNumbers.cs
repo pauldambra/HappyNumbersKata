@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace HappyNumbers
 {
@@ -10,8 +13,24 @@ namespace HappyNumbers
     // If you reach 1 then the number you started with is a “happy number”.
     public static class HappyNumbers
     {
-        private static readonly Dictionary<int, HashSet<int>> NumberChain = new Dictionary<int, HashSet<int>>(); 
-        private static readonly Dictionary<string, bool> HappyNumberResults = new Dictionary<string, bool>();
+        private static readonly ConcurrentDictionary<int, HashSet<int>> NumberChain = new ConcurrentDictionary<int, HashSet<int>>();
+        private static readonly ConcurrentDictionary<string, bool> HappyNumberResults = new ConcurrentDictionary<string, bool>();
+
+        public static Dictionary<int, bool> AreHappyNumbers(this IEnumerable<int> numbersToProcess, CancellationToken cancellationToken)
+        {
+            var numbers = numbersToProcess as int[] ?? numbersToProcess.ToArray();
+            var results = new Dictionary<int, bool>(numbers.Count());
+            foreach (var number in numbers)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Debug.WriteLine("returning before processing {0} on cancel", number);
+                    return results;
+                }
+                results.Add(number, number.IsAHappyNumber());
+            }
+            return results;
+        } 
 
         public static bool IsAHappyNumber(this int startingNumber)
         {
@@ -27,7 +46,7 @@ namespace HappyNumbers
             }
 
             GuardAgainstStrangeness(startingNumber);
-            NumberChain.Add(startingNumber, new HashSet<int>{startingNumber});
+            NumberChain.TryAdd(startingNumber, new HashSet<int> { startingNumber });
             TestForHappiness(startingNumber, happyNumberKey);
             return HappyNumberResults[happyNumberKey];
         }
@@ -36,10 +55,7 @@ namespace HappyNumbers
         {
             if (NumberChain.ContainsKey(startingNumber))
             {
-                throw new Exception(
-                    string.Format(
-                        "I didn't think we could have a number ({0}) without a result that was in the number chain at this point",
-                        startingNumber));
+                Debug.WriteLine("this number {0} has been processed but doesn't have a result?!", startingNumber);
             }
         }
 
@@ -56,12 +72,12 @@ namespace HappyNumbers
                 nextInChain = nextInChain.GetSumOfSquaredDigits();
                 if (nextInChain == 1)
                 {
-                    HappyNumberResults.Add(happyNumberKey, true);
+                    HappyNumberResults.TryAdd(happyNumberKey, true);
                     break;
                 }
                 if (TheCalculationChainHasLoopedAround(startingNumber, nextInChain))
                 {
-                    HappyNumberResults.Add(happyNumberKey, false);
+                    HappyNumberResults.TryAdd(happyNumberKey, false);
                     break;
                 }
             }
